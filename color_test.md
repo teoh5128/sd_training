@@ -1,7 +1,9 @@
+
 # **Bold** <br>
 __Bold__ 
 *Italic* <br>
 _Italic_
+'''
 ***Hybrid*** <br>
 ___Hybird___
 > **_Hybrid_**
@@ -20,4 +22,22 @@ ___Hybird___
 ---
 continue
 ****
+[Link to Google](https://www.google.com/webhp?hl=en&sa=X&ved=0ahUKEwiAvZenpcb7AhVbxTgGHWIOAPkQPAgI “Google”)
+
+![Main](crab-rave.gif)
+
+| name | sex | age |
+| :---- | :----: | ----: |
+| Rob | F | 3 |
+| Sam | M | 23 |
+
+- [x] stay alive
+- [ ] Make it interesting
+- [ ] Publish it
+
+```diff
+- This is a red colored line
++ This is a green colored line
+@@ This is a purple colored line @@
+```
 
