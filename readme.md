@@ -4,6 +4,9 @@ yishen here this is my first repo
 
 
 
+<!---
+![](day0.JPG) 
+--->
+<img src="day0.JPG" width="850">
 
-![](day0.JPG)
-> error encountered after source standaloneHome/toop.tcl
+> error encountered after source standaloneHome/top.tcl
