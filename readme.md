@@ -1,9 +1,14 @@
 yishen here this is my first repo
 
 # **Day_0** 
+## Lecture Topics
 
 
+## Lab session
+### Day 0 Lab
+####Steps
 
+####Results
 <!---
 ![](day0.JPG) 
 --->
