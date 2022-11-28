@@ -1,14 +1,23 @@
-yishen here this is my first repo
+# SD Training 
+Content of training:
+- [Day_0 : System/Tool Setup Check. GitHub ID creation](https://github.com/YishenKuma/sd_training/edit/main/readme.md#day_0--systemtool-setup-check-github-id-creation)
 
-# **Day_0** 
-## Lecture Topics
+## **Day_0 : System/Tool Setup Check. GitHub ID creation** 
+### Lecture Topics
+* Chip and Package
+* Wire bonding
+* Core and IO
+* Macros and IPs
+* Communication between software and hardware
 
+### Lab session
 
-## Lab session
-### Day 0 Lab
-####Steps
+#### Steps
 
-####Results
+[Setup](scripts/github_lab0.txt)
+
+#### Results
+
 <!---
 ![](day0.JPG) 
 --->
