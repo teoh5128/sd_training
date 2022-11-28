@@ -1,0 +1,10 @@
+cd /nfs/png/disks/png_mip_gen6p9ddr_0032/ 
+mkdir -p ymaniraj/vsdiat/VSDIAT_LABS/
+cd ymaniraj/vsdiat/VSDIAT_LABS/
+git config --global http.proxy http://proxy-dmz.intel.com:912
+git config --global https.proxy http://proxy-dmz.intel.com:912
+git clone https://github.com/Devipriya1921/VSDBabySoC_ICC2
+cd VSDBabySoC_ICC2
+/p/hdk/pu_tu/prd/sams/mig76_wlw/setup/enter_p31 -cfg ip76p31r08hp7rev03 -ov ./
+icc2_shell
+standaloneFlow/top.tcl
