@@ -35,6 +35,10 @@ Foundry IPs: Macro cells developed with the intent of licencing to multiple vend
 * Communication between software and hardware
 <img src="images/compilers-assemblers-translators-opener.jpg" width="400">
 
+Compiler: reads the complete source program written in high-level language as a whole in one go and translates it into an equivalent program in assembly language
+
+Assembler: translate the program written in assembly language into machine code represented by binary code
+
 ### Lab session
 
 #### Steps
