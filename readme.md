@@ -2,6 +2,9 @@
 Content of training:
 - [Day_0 : System/Tool Setup Check. GitHub ID creation](https://github.com/YishenKuma/sd_training/edit/main/readme.md#day_0--systemtool-setup-check-github-id-creation)
 
+> - [Lecture_0](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lecture-topics)
+> - [Lab_0](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lab-session)
+
 ## **Day_0 : System/Tool Setup Check. GitHub ID creation** 
 ### Lecture Topics
 * Chip and Package
