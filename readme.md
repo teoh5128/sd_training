@@ -68,6 +68,6 @@ Assembler: translate the program written in assembly language into machine code 
 <!---
 <img src="day0.JPG" width="850">
 --->
-![](day0.JPG) 
+![]([day0.JPG](https://github.com/YishenKuma/sd_training/blob/main/day0.JPG)) 
 
 > error encountered after source standaloneHome/top.tcl
