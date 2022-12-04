@@ -5,11 +5,11 @@ Content of training:
 > - [Lecture_0](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lecture-topics)
 > - [Lab_0](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lab-session)
 
-- [Day_0 : System/Tool Setup Check. GitHub ID creation](https://github.com/YishenKuma/sd_training/edit/main/readme.md#day_0--systemtool-setup-check-github-id-creation)
+- [Day_1 : Introduction to iverilog design test bench](https://github.com/YishenKuma/sd_training/blob/main/readme.md#day_1--introduction-to-iverilog-design-test-bench)
 
-> - [Lecture_1]()
-> - [VSD-IAT recordings]()
-> - [Lab_1]()
+> - [Lecture_1](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lecture-topics-1)
+> - [VSD-IAT recordings](https://github.com/YishenKuma/sd_training/blob/main/readme.md#vsd-iat-recording-topics)
+> - [Lab_1](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lab-day_1)
 
 ## **Day_0 : System/Tool Setup Check. GitHub ID creation** 
 ### Lecture Topics
@@ -80,16 +80,47 @@ Assembler: translate the program written in assembly language into machine code 
 
 ## **Day_1 : Introduction to iverilog design test bench** 
 ### Lecture Topics
-### VSD-IAT Recording Topics
-### Lab Day_1
+* RTL Deisgn and Logic synthesis
+* RTL
+* HDL
+* Verilog
+* iverilog
+* gktkwave
 
+
+### VSD-IAT Recording Topics
+* Verilog
+* RTL
+* Design
+* Testbench
+* Netlist
+* RTL Design
+* Logic Synthesis
+* Verilog files
+* Library files
+* Clock timing and frequency claculation
+* Setup and Hold 
+* Selection of cells
+
+
+### Lab Day_1
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/1.jpg)
+remote spark ubuntu terminal for coding
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/2.jpg)
+cloning github repo in vlsi directory
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/3.jpg)
+loading verilog files into simulator, and executing output vcd file for viewing in gtkwave
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/4.jpg)
+verilog file used and corresponding testbench file used
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/5.jpg)
+loading yoysy softqware to be used for synthesis
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/6.jpg)
+reading library and verilog files, then performing synthesis using command "synth -top good_mux"
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/7.jpg)
+generating the netlist using command "abc -liberty *lib_path*"
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/8.jpg)
+shows graphical representation of realized logic
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/9.jpg)
+verilog file written from netlist produced
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/10.jpg)
+simplified verilog file written using the -noattr switch 
