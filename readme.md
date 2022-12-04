@@ -79,29 +79,21 @@ Assembler: translate the program written in assembly language into machine code 
 > error encountered after source standaloneHome/top.tcl
 
 ## **Day_1 : Introduction to iverilog design test bench** 
-### Lecture Topics
-* RTL Deisgn and Logic synthesis
+### Lecture + VSD-IAT recordining Topics 
 * RTL
 * HDL
-* Verilog
+* RTL Deisgn
+* Logic synthesis
 * iverilog
 * gktkwave
-
-
-### VSD-IAT Recording Topics
-* Verilog
-* RTL
 * Design
 * Testbench
 * Netlist
-* RTL Design
-* Logic Synthesis
 * Verilog files
 * Library files
 * Clock timing and frequency claculation
 * Setup and Hold 
 * Selection of cells
-
 
 ### Lab Day_1
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/1.jpg)
