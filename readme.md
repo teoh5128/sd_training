@@ -7,8 +7,7 @@ Content of training:
 
 - [Day_1 : Introduction to iverilog design test bench](https://github.com/YishenKuma/sd_training/blob/main/readme.md#day_1--introduction-to-iverilog-design-test-bench)
 
-> - [Lecture_1](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lecture-topics-1)
-> - [VSD-IAT recordings](https://github.com/YishenKuma/sd_training/blob/main/readme.md#vsd-iat-recording-topics)
+> - [Lecture_1 + VSD-IAT recording topics](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lecture--vsd-iat-recordining-topics))
 > - [Lab_1](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lab-day_1)
 
 ## **Day_0 : System/Tool Setup Check. GitHub ID creation** 
