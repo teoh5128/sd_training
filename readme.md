@@ -80,19 +80,71 @@ Assembler: translate the program written in assembly language into machine code 
 ## **Day_1 : Introduction to iverilog design test bench** 
 ### Lecture + VSD-IAT recordining Topics 
 * RTL
-* HDL
+
+RTL refers to Register Transfer Level, a design abstraction that models a circuit in terms of the flow between signals and the logical operations performed
+* Verilog HDL
+
+Verilog Hardware Description Language (HDL) is a language used to describe the behaviour of a circuit.
 * RTL Deisgn
-* Logic synthesis
+
+The behavioural representation of the required specification, written in verilog HDL
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/11.jpg)
+
+RTL design is checked and verified using simulator for adherence to spec by simulatind the design
 * iverilog
+
+iverilog is the tool used for simulating the design, to verify the intent of design
+the simulator acts by identifying changes in the input signal and evaluating the output based on changes identified from the input
+output file dumped out is known as the vcd (value change format) file, to be viewed in gtkwave tool
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/12.jpg)
 * gktkwave
+
+gtkwave is a waveform analyzer tool primarily used for visualization
 * Design
+
+Design is the verilog code/codes which has the intended functionality meeting the required specification
 * Testbench
-* Netlist
+
+testbench applies test vectors to the design to check its functionality
+checks wether design is obeying to the required specifications
 * Verilog files
+
+design verilog file will need to have an associated testbench_design verilog file to be loaded into iverilog
+design and testbench file will have a one to one coorespondance
 * Library files
+
+the library file is a collection of modules containinga a variety of standard cells
+* Logic synthesis
+
+Synthesizer is the tool used to convert RTL into a netlist
+The synthesizer maps the RTL code with the digital logic circuit,using a given library file, to generate a netlist
+* Netlist
+
+Design is converted into gates and the connections are made between the gates, this file is given out as the netlist
+The netlist can then be verified with the cooresponding testbench through the simulator
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/15.jpg)
 * Clock timing and frequency claculation
+
+The library file used in generating a netlist has a different sets of standards cells with variying speeds due to the combinational delay in circuit
+Combinational delay in the logic path determines the maximum speed of operatiom of the logic circuit
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/16.jpg)
+
+Because the circuit is affected by setup and hold timings, we need to have a variety usage of cells
 * Setup and Hold 
+
+Setup time refers to the time needed for data at input, to become stable before the active edge of clock
+Hold time refers to the time needed for data at input, to become stable after the active edge of clock
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/17.jpg)
 * Selection of cells
+
+We need cells to work fast to meet the required performance, but will sacrifice power and area
+But, to handle hold issues that may be present, we need to have cells that work slow, which will also cause circuit to be sluggish
+Guidance is needed for the synthesizer to select the appropriate cells for optimum implementation of the logic circuit, this guidance is offered though the use of constraints 
 
 ### Lab Day_1
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/1.jpg)
