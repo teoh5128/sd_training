@@ -10,6 +10,11 @@ Content of training:
 > - [Lecture_1 + VSD-IAT recording topics](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lecture--vsd-iat-recordining-topics)
 > - [Lab_1](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lab-day_1)
 
+- [Day_2: Timing, Hierarchical vs Flat synthesis, and Efficient flop coding style](https://github.com/YishenKuma/sd_training/blob/main/readme.md#day_2--timing-hierarchical-vs-flat-synthesis-and-efficient-flop-coding-style)
+
+> - [Lecture 2 + VSDIAT recordings](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lecture--vsd-iat-recordining-topics-1)
+> - [Lab 2](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lab-day_2)
+
 ## **Day_0 : System/Tool Setup Check. GitHub ID creation** 
 ### Lecture Topics
 * Chip and Package
