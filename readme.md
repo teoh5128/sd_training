@@ -167,3 +167,25 @@ shows graphical representation of realized logic
 verilog file written from netlist produced
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/10.jpg)
 simplified verilog file written using the -noattr switch 
+
+## **Day_2 : Timing, Hierarchical vs Flat synthesis, and Efficient flop coding style** 
+### Lecture + VSD-IAT recordining Topics 
+* Fundamental of CMOS
+* Setup and Hold time
+* Efficient coding style
+* .Lib
+* Hierachical and Flat Representation
+* Sub module synthesis
+* Stacked PMOS vs Stacked NMOS
+* Gltches
+* Flops
+
+### Lab Day_2
+* Top module synthesis
+* flattened module synthesis
+* sub module synthsis
+* Asynchronous reset flop
+* Asynchronous set flop
+* Synchronous flop
+* Efficient coding style
+
