@@ -176,21 +176,143 @@ simplified verilog file written using the -noattr switch
 ## **Day_2 : Timing, Hierarchical vs Flat synthesis, and Efficient flop coding style** 
 ### Lecture + VSD-IAT recordining Topics 
 * Fundamental of CMOS
+
+complementary metal-oxide semiconductor 
+
+used for constructing integrated circuit (IC) chips
+
+the outputs of the PMOS and NMOS transistors are complementary to create an inverting output
+
+![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/1.jpg)
+
 * Setup and Hold time
-* Efficient coding style
+
+Setup Time is the time that the input data signals need to become stable before the active clock edge occurs
+
+Hold Time is the time that the input data signals need to become stable after the active clock edge occurs
+
 * .Lib
+
+Collection of standard cells
+
+The naming of the library includes the specific process (typical/nominal/..), temperature and voltage for the design.
+
+The libraries created are characterized to model the variations in the process, voltage and temperature (PVT)
+
+The variations in the process, temperature and voltage of design determines how the design will operate, and the design should be able to operate across all corners 
+with the regard to difference in PVT
+
+The library specifies on needed information for the cell mapping such as the technology, delay model, units of measurements, operating conditions , etc,.
+
+The library holds a variety of cells along specified features of the cells such as leakage power, area, signal used for pins, and features of the cell pins.
+
+Each combination of input that produce a unique output will have a specific leakage power.
+
+Variations of the same types of cells will also have unique features associated.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/2.jpg)
+
 * Hierachical and Flat Representation
+
+Hierarchical design shows design elements as sub-modules within “top module” rather than seeing the instantiation of gates as in flat synthesis
+
+In a flattened “flat netlist” the hierarchies are flattened, showing all the cells used in the whole design, which is the complete structure, rather than in sub module form
+
+![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/3.jpg)
+
 * Sub module synthesis
+
+we perform sub module synthesis when we have multiple instances of same module, or when the design is too complex that it would be better to divide the design into sub modules to be synthesized individually
+
 * Stacked PMOS vs Stacked NMOS
+
+Occasionally library elements may result in the design of a stack PMOS during synthesis
+
+This is undesirable as stacked PMOS due to its poor mobility, therefor during synthesis the logic can be restructured to use other components to create the same logic but under a stacked NMOS
+
+E.g. use of OR gate replaced with NAND gate and INV cells
+
 * Gltches
+
+Glitches are unwanted pulses at the output of combinational gates
+
+These glitches occur due to unbalanced delay to the combinational gates
+
+The glitch at one gate can then be feed into the following component causing the later resulting output net to be extremely glitchy and causing high dynamic power consumption.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/4.jpg)
+
 * Flops
+
+The presence of flops acts to shield the proceeding elements from being affected by the undesired glitch, as the clock signal is unaffected from data signals and glitches
+
+The clock pin will allow the value to stay stable, and therefor avoid undesired glitches in the proceeding elements
+
+The flops need to be initialized for the combinational circuit to have its desirable output
+
+The flop is initialized through its control pins (Reset | Set)
+
+![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/5.jpg)
+
+* Asynchronous vs Synchronous
+
+Asynchronous flops means the output of the circuit will be triggered from the rising edge of the set/reset signal, in addition to the rising edge of the clock signal
+
+Synchronous flops means the output of the circuit will be triggered solely on the rising edge of the clock signal, a rising edge in the set/reset pin will not prompt data to be captured
+
+![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/6.jpg)
 
 ### Lab Day_2
 * Top module synthesis
+
+![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/7.jpg)
+
+![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/10.jpg)
+
+> Library elements used in sub modules
+
 * flattened module synthesis
+
+![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/8.jpg)
+
 * sub module synthsis
+
+![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/9.jpg)
+
 * Asynchronous reset flop
+
+![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/11.jpg)
+
+> data at q can either change at the rising egde of clock or set signal
+> if set pin is toggeled high, the q will turn high as well
+> when set pin is low, the q pin will be equal to d pin at the rising edge of clock signal
+
 * Asynchronous set flop
+
+![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/12.jpg)
+
+> data at q can either change at the rising egde of clock or set signal
+> if set pin is toggeled high, the q will turn high as well
+> when set pin is low, the q pin will be equal to d pin at the rising edge of clock signal
+
 * Synchronous flop
+
+![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/13.jpg)
+
+> q pin will only changes upon rising clock edge, and not on rising edge of reset pin
+> if reset pin is high during active clock edge, then q will be set to 0
+
 * Efficient coding style
+
+![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/14.jpg)
+
+> no cells getting mapped during synthesis
+
+![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/15.jpg)
+
+> 3 bit data getting multiplied without addition cells by adding zero bit/bits or with using own data
+> multiplying by 2: 111(7) + 0 = 1110(14)
+> multiplying by 4: 111(7) + 00 = 11100(28)
+> multiplying by 8: 111(7) + 000 = 111000(56)
+> multiplying by 9: 111(7) + 00 = 111111(63)
 
