@@ -318,4 +318,127 @@ Synchronous flops means the output of the circuit will be triggered solely on th
 
 ## **Day_3 : Combinational and sequential optimizations** 
 ### Lecture + VSD-IAT recordining Topics 
+* Nature of synthesis and optimization
+
+Synthesis is not a push button solution
+
+It is dependant on the design statement and clarity of implementation
+
+Some areas will have been applied optimization strategies, and some wont
+
+An area or can be flagged for high effort optimization or set to don’t touch status
+
+The more the design is affected by tool methodologies, the more likely it is to divert from the original design intent
+
+* Optimization methodology
+
+The synthesis tool will perform optimization by minimizing cost functions (design rule costs and optimization costs)
+
+Cost functions vary depending on the EDA tool vendor
+
+Optimization of a design will be an iterative process, as the results of synthesis are dependant on multiple factors such as libraries, constraints and coding styles
+
+Optimizations costs = max delay cost + min delay cost + max power cost + max area cost (most important to least important, may vary depending on EDA vendor)
+
+* Boolean Algebra basics
+
+Boolean algebra constitutes a majority of the combinational optimization
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/1.jpg)
+
+de morgan rule is used to transfor or gate into inverting nand gate, as or gate uses stacked pmos which is undesirable
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/5.jpg)
+
+* Combinational and Sequential Optimization
+
+Constant propagation is the simplification of a combinational circuit through boolean minimization, allowing less components to used Constant propagation occurs for both combinational and sequential logic
+
+Synthesis optimization also allows improvement on circuit delay, as timing constraints may not be met with original logic, thus circuit is optimized by the tool to reduce gate count and minimize delay to value within expectation 
+
+Constant propagation in combinational logic is based on Boolean algebra, whereas for sequential constant propagation, it is dependant on Boolean algebra and timing diagram analysis
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/2.jpg)
+
+One of the additional optimization techniques is known as resource sharing, common inputs would be eliminated, which would also increase the number of fanouts, leaving the overall logic to be distorted in comparison to the original logic intent
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/6.jpg)
+
+Boundary optimization is another technique used, where the boundaries inside top level design are optimized, the constants are pushed into and out of hierarchy, and rewires feed throughs and complementary signals
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/7.jpg)
+
+Register retiming can also be done by readjusting the combinational logic, allowing the overall operating frequency to be increased
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/4.jpg)
+
+State optimization is the optimization of unused gates
+
+Cloning is a physical aware optimization that decreases the load of heavily loaded cell by replicating the cell
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/3.jpg)
+
 ### Lab Day_3
+#### Combinational Logic Optimization
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/8.jpg)
+
+verilog files used for combinational logic optimizations
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/9.jpg)
+
+> evaluating the boolean logic for the first 4 verilog files
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/10.jpg)
+
+> based on logic, an and gate is used
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/11.jpg)
+
+> based on logic, an or  gate is used
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/12.jpg)
+
+> based on logic, 3 input and gate is used
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/13.jpg)
+
+> based on logic, and xnor gate is used, and input b is not used for output
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/14.jpg)
+
+> based on logic, input and b are fed into and gate, then the output is fed with input c into and or gate within 1 cell
+
+#### Sequential Logic Optimization
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/15.jpg)
+
+dff_const1: 
+> while reset pin is high, Q is low
+> if reset toggeled to zero, q will not immediately switch to high, but only once triggered by positive edge of clock
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/16.jpg)
+
+dff_const2: 
+> while set pin is high, Q is high
+> since input D is set high, if set is toggeled to low, the value remians high even as triggered by clock, as q = d
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/16.jpg)
+
+dff_const3: 
+> two flops used where the output of teh first is fed into the second
+> output of first flop is similar to dff_const1
+> the second flop out put stays high while set is high, once set is low, it will latch to the immdieate value of Q1, but due to delay, the value will be low, until it becomes high at the next positive edge
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/17.jpg)
+
+dff_const4: 
+> first flop behave similar to dff_const2, where output is high only
+> second flop replicates this behaviour as well as its input Q1 is always high, so output q will also be always high
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/18.jpg)
+
+dff_const5: 
+> output of first flop is similar to dff_const1
+> second flop also replicates the behaviour, but since its input is Q1, which toggels from low to high, Q must also toggle from low to high
+> reason as to why both flops do not go high at the same time at the first positive clock edge after reset goes low, is because of the delayed capture of data at input, thus value is low until proceeding positive clock edge  
