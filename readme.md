@@ -316,3 +316,6 @@ Synchronous flops means the output of the circuit will be triggered solely on th
 > multiplying by 8: 111(7) + 000 = 111000(56)
 > multiplying by 9: 111(7) + 00 = 111111(63)
 
+## **Day_3 : Combinational and sequential optimizations** 
+### Lecture + VSD-IAT recordining Topics 
+### Lab Day_3
