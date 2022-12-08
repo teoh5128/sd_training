@@ -15,6 +15,11 @@ Content of training:
 > - [Lecture 2 + VSDIAT recordings](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lecture--vsd-iat-recordining-topics-1)
 > - [Lab 2](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lab-day_2)
 
+- [Day_3: Combinational and sequential optimizations](https://github.com/YishenKuma/sd_training/blob/main/readme.md#day_3--combinational-and-sequential-optimizations)
+
+> - [Lecture 3 + VSDIAT recordings](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lecture--vsd-iat-recordining-topics-2)
+> - [Lab 3](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lab-day_3)
+
 ## **Day_0 : System/Tool Setup Check. GitHub ID creation** 
 ### Lecture Topics
 * Chip and Package
@@ -385,39 +390,39 @@ Cloning is a physical aware optimization that decreases the load of heavily load
 
 verilog files used for combinational logic optimizations
 
-![](https://github.com/YishenKuma/sd_training/blob/main/day3/9.jpg)
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/Picture9.jpg)
 
 > evaluating the boolean logic for the first 4 verilog files
 
-![](https://github.com/YishenKuma/sd_training/blob/main/day3/10.jpg)
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/9.jpg)
 
 > based on logic, an and gate is used
 
-![](https://github.com/YishenKuma/sd_training/blob/main/day3/11.jpg)
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/10.jpg)
 
 > based on logic, an or  gate is used
 
-![](https://github.com/YishenKuma/sd_training/blob/main/day3/12.jpg)
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/11.jpg)
 
 > based on logic, 3 input and gate is used
 
-![](https://github.com/YishenKuma/sd_training/blob/main/day3/13.jpg)
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/12.jpg)
 
 > based on logic, and xnor gate is used, and input b is not used for output
 
-![](https://github.com/YishenKuma/sd_training/blob/main/day3/14.jpg)
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/13.jpg)
 
 > based on logic, input and b are fed into and gate, then the output is fed with input c into and or gate within 1 cell
 
 #### Sequential Logic Optimization
 
-![](https://github.com/YishenKuma/sd_training/blob/main/day3/15.jpg)
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/14.jpg)
 
 dff_const1: 
 > while reset pin is high, Q is low
 > if reset toggeled to zero, q will not immediately switch to high, but only once triggered by positive edge of clock
 
-![](https://github.com/YishenKuma/sd_training/blob/main/day3/16.jpg)
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/15.jpg)
 
 dff_const2: 
 > while set pin is high, Q is high
