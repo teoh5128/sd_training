@@ -21,7 +21,9 @@ Content of training:
 > - [Lab 3](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lab-day_3)
 
 ## **Day_0 : System/Tool Setup Check. GitHub ID creation** 
+
 ### Lecture Topics
+
 * Chip and Package
 <!---
 <img src="images/Chip and package.JPG" width="400">
@@ -88,13 +90,17 @@ Assembler: translate the program written in assembly language into machine code 
 > error encountered after source standaloneHome/top.tcl
 
 ## **Day_1 : Introduction to iverilog design test bench** 
+
 ### Lecture + VSD-IAT recordining Topics 
+
 * RTL
 
 RTL refers to Register Transfer Level, a design abstraction that models a circuit in terms of the flow between signals and the logical operations performed
+
 * Verilog HDL
 
 Verilog Hardware Description Language (HDL) is a language used to describe the behaviour of a circuit.
+
 * RTL Deisgn
 
 The behavioural representation of the required specification, written in verilog HDL
@@ -102,54 +108,72 @@ The behavioural representation of the required specification, written in verilog
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/11.jpg)
 
 RTL design is checked and verified using simulator for adherence to spec by simulatind the design
+
 * iverilog
 
 iverilog is the tool used for simulating the design, to verify the intent of design
+
 the simulator acts by identifying changes in the input signal and evaluating the output based on changes identified from the input
 output file dumped out is known as the vcd (value change format) file, to be viewed in gtkwave tool
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/12.jpg)
+
 * gktkwave
 
 gtkwave is a waveform analyzer tool primarily used for visualization
+
 * Design
 
 Design is the verilog code/codes which has the intended functionality meeting the required specification
+
 * Testbench
 
 testbench applies test vectors to the design to check its functionality
+
 checks wether design is obeying to the required specifications
+
 * Verilog files
 
 design verilog file will need to have an associated testbench_design verilog file to be loaded into iverilog
+
 design and testbench file will have a one to one coorespondance
+
 * Library files
 
 the library file is a collection of modules containinga a variety of standard cells
+
 * Logic synthesis
 
 Synthesizer is the tool used to convert RTL into a netlist
+
 The synthesizer maps the RTL code with the digital logic circuit,using a given library file, to generate a netlist
+
 * Netlist
 
 Design is converted into gates and the connections are made between the gates, this file is given out as the netlist
+
 The netlist can then be verified with the cooresponding testbench through the simulator
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/15.jpg)
+
 * Clock timing and frequency claculation
 
 The library file used in generating a netlist has a different sets of standards cells with variying speeds due to the combinational delay in circuit
+
 Combinational delay in the logic path determines the maximum speed of operatiom of the logic circuit
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/16.jpg)
 
 Because the circuit is affected by setup and hold timings, we need to have a variety usage of cells
+
 * Setup and Hold 
 
 Setup time refers to the time needed for data at input, to become stable before the active edge of clock
+
 Hold time refers to the time needed for data at input, to become stable after the active edge of clock
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/17.jpg)
+
 * Selection of cells
 
 We need cells to work fast to meet the required performance, but will sacrifice power and area
@@ -157,25 +181,45 @@ But, to handle hold issues that may be present, we need to have cells that work 
 Guidance is needed for the synthesizer to select the appropriate cells for optimum implementation of the logic circuit, this guidance is offered though the use of constraints 
 
 ### Lab Day_1
+
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/1.jpg)
+
 remote spark ubuntu terminal for coding
+
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/2.jpg)
+
 cloning github repo in vlsi directory
+
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/3.jpg)
+
 loading verilog files into simulator, and executing output vcd file for viewing in gtkwave
+
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/4.jpg)
+
 verilog file used and corresponding testbench file used
+
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/5.jpg)
+
 loading yoysy softqware to be used for synthesis
+
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/6.jpg)
+
 reading library and verilog files, then performing synthesis using command "synth -top good_mux"
+
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/7.jpg)
+
 generating the netlist using command "abc -liberty *lib_path*"
+
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/8.jpg)
+
 shows graphical representation of realized logic
+
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/9.jpg)
+
 verilog file written from netlist produced
+
 ![](https://github.com/YishenKuma/sd_training/blob/main/day_1/lab/10.jpg)
+
 simplified verilog file written using the -noattr switch 
 
 ## **Day_2 : Timing, Hierarchical vs Flat synthesis, and Efficient flop coding style** 
@@ -268,6 +312,7 @@ Synchronous flops means the output of the circuit will be triggered solely on th
 ![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/6.jpg)
 
 ### Lab Day_2
+
 * Top module synthesis
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/7.jpg)
@@ -289,7 +334,9 @@ Synchronous flops means the output of the circuit will be triggered solely on th
 ![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/11.jpg)
 
 > data at q can either change at the rising egde of clock or set signal
+
 > if set pin is toggeled high, the q will turn high as well
+
 > when set pin is low, the q pin will be equal to d pin at the rising edge of clock signal
 
 * Asynchronous set flop
@@ -297,7 +344,9 @@ Synchronous flops means the output of the circuit will be triggered solely on th
 ![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/12.jpg)
 
 > data at q can either change at the rising egde of clock or set signal
+
 > if set pin is toggeled high, the q will turn high as well
+
 > when set pin is low, the q pin will be equal to d pin at the rising edge of clock signal
 
 * Synchronous flop
@@ -305,6 +354,7 @@ Synchronous flops means the output of the circuit will be triggered solely on th
 ![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/13.jpg)
 
 > q pin will only changes upon rising clock edge, and not on rising edge of reset pin
+
 > if reset pin is high during active clock edge, then q will be set to 0
 
 * Efficient coding style
@@ -316,13 +366,19 @@ Synchronous flops means the output of the circuit will be triggered solely on th
 ![](https://github.com/YishenKuma/sd_training/blob/main/Day_2/15.jpg)
 
 > 3 bit data getting multiplied without addition cells by adding zero bit/bits or with using own data
+
 > multiplying by 2: 111(7) + 0 = 1110(14)
+
 > multiplying by 4: 111(7) + 00 = 11100(28)
+
 > multiplying by 8: 111(7) + 000 = 111000(56)
+
 > multiplying by 9: 111(7) + 00 = 111111(63)
 
 ## **Day_3 : Combinational and sequential optimizations** 
+
 ### Lecture + VSD-IAT recordining Topics 
+
 * Nature of synthesis and optimization
 
 Synthesis is not a push button solution
@@ -384,6 +440,7 @@ Cloning is a physical aware optimization that decreases the load of heavily load
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/3.jpg)
 
 ### Lab Day_3
+
 #### Combinational Logic Optimization
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/8.jpg)
@@ -392,29 +449,42 @@ verilog files used for combinational logic optimizations
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/Picture9.jpg)
 
+opt_check:
+
 > evaluating the boolean logic for the first 4 verilog files
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/9.jpg)
+
+opt_check2:
 
 > based on logic, an and gate is used
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/10.jpg)
 
+opt_check3:
+
 > based on logic, an or  gate is used
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/11.jpg)
 
+opt_check4:
+
 > based on logic, 3 input and gate is used
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/12.jpg)
+
+multiple_module_opt:
 
 > based on logic, and xnor gate is used, and input b is not used for output
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/20.jpg)
 
 > based on logic, input a is fed into submodule 1 with high pin, logic in verilog shows submodule 1 as an and gate
+
 > the output (based on boolean should be a.1=a) will be fed as n1
+
 > sub module 2 is removed in design during "synth -top" as output n2 is not initiallised in assigned logic y = c | (b & n1)
+
 > n1 b and c are fed into an and or gate (b and a through and gate, the output and c through or gate)
 
 #### Sequential Logic Optimization
@@ -422,33 +492,45 @@ verilog files used for combinational logic optimizations
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/14.jpg)
 
 dff_const1: 
+
 > while reset pin is high, Q is low
+
 > if reset toggeled to zero, q will not immediately switch to high, but only once triggered by positive edge of clock
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/15.jpg)
 
 dff_const2: 
+
 > while set pin is high, Q is high
+
 > since input D is set high, if set is toggeled to low, the value remians high even as triggered by clock, as q = d
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/16.jpg)
 
 dff_const3: 
+
 > two flops used where the output of teh first is fed into the second
+
 > output of first flop is similar to dff_const1
+
 > the second flop out put stays high while set is high, once set is low, it will latch to the immdieate value of Q1, but due to delay, the value will be low, until it becomes high at the next positive edge
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/17.jpg)
 
 dff_const4: 
+
 > first flop behave similar to dff_const2, where output is high only
+
 > second flop replicates this behaviour as well as its input Q1 is always high, so output q will also be always high
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/18.jpg)
 
 dff_const5: 
+
 > output of first flop is similar to dff_const1
+
 > second flop also replicates the behaviour, but since its input is Q1, which toggels from low to high, Q must also toggle from low to high
+
 > reason as to why both flops do not go high at the same time at the first positive clock edge after reset goes low, is because of the delayed capture of data at input, thus value is low until proceeding positive clock edge  
 
 #### Unused Output Optimization
@@ -458,8 +540,11 @@ dff_const5:
 Counter_opt:
 
 > for this case, the output is assigned the final bit of count, and the first 2 bits would not have any significance on the output
+
 > whenever count is increased, the final bit is toggeled, and since the output has no dependancies on the first 2 bits, they are unused outputs
+
 > this case is also only using 1 dff, insetad of 3 as supposed when using 3 bit counter, but since there are 2 unused outputs, they are optimized off
+
 > the input of flop will just be the inverted output of the flop
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/22.jpg)
@@ -467,6 +552,9 @@ Counter_opt:
 Counter_opt2:
 
 > in this case, our output is assigned as 3'b100
+
 > now, we intiallize the design to use all the outputs, thus the 3 bit counter is implemented with 3 flops in the design
+
 > we have a large amount of logic within the design for the use of the adder circuit, since the first 2 bits are used, the logic will be used
+
 > at the output, we have inverted inputs !2!1!0, fed into a nor gate with an inverted C pin, thus the inputs are 2!1!0 ~= 3[3'b100]
