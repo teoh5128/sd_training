@@ -410,7 +410,7 @@ verilog files used for combinational logic optimizations
 
 > based on logic, and xnor gate is used, and input b is not used for output
 
-![](https://github.com/YishenKuma/sd_training/blob/main/day3/13.jpg)
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/20.jpg)
 
 > based on logic, input and b are fed into and gate, then the output is fed with input c into and or gate within 1 cell
 
