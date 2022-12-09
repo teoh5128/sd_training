@@ -449,39 +449,42 @@ verilog files used for combinational logic optimizations
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/Picture9.jpg)
 
-opt_check:
-
 > evaluating the boolean logic for the first 4 verilog files
+
+opt_check:
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/9.jpg)
 
-opt_check2:
-
 > based on logic, an and gate is used
+
+opt_check2:
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/10.jpg)
 
-opt_check3:
-
 > based on logic, an or  gate is used
+
+opt_check3:
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/11.jpg)
 
-opt_check4:
 
 > based on logic, 3 input and gate is used
 
+opt_check4:
+
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/12.jpg)
 
-multiple_module_opt:
-
 > based on logic, and xnor gate is used, and input b is not used for output
+
+multiple_module_opt:
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/20.jpg)
 
 > based on logic, input a is fed into submodule 1 with high pin, logic in verilog shows submodule 1 as an and gate
 
 > the output (based on boolean should be a.1=a) will be fed as n1
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/23.JPG)
 
 > sub module 2 is removed in design during "synth -top" as output n2 is not initiallised in assigned logic y = c | (b & n1)
 
