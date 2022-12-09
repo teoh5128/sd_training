@@ -412,7 +412,10 @@ verilog files used for combinational logic optimizations
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day3/20.jpg)
 
-> based on logic, input and b are fed into and gate, then the output is fed with input c into and or gate within 1 cell
+> based on logic, input a is fed into submodule 1 with high pin, logic in verilog shows submodule 1 as an and gate
+> the output (based on boolean should be a.1=a) will be fed as n1
+> sub module 2 is removed in design during "synth -top" as output n2 is not initiallised in assigned logic y = c | (b & n1)
+> n1 b and c are fed into an and or gate (b and a through and gate, the output and c through or gate)
 
 #### Sequential Logic Optimization
 
@@ -447,3 +450,23 @@ dff_const5:
 > output of first flop is similar to dff_const1
 > second flop also replicates the behaviour, but since its input is Q1, which toggels from low to high, Q must also toggle from low to high
 > reason as to why both flops do not go high at the same time at the first positive clock edge after reset goes low, is because of the delayed capture of data at input, thus value is low until proceeding positive clock edge  
+
+#### Unused Output Optimization
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/21.jpg)
+
+Counter_opt:
+
+> for this case, the output is assigned the final bit of count, and the first 2 bits would not have any significance on the output
+> whenever count is increased, the final bit is toggeled, and since the output has no dependancies on the first 2 bits, they are unused outputs
+> this case is also only using 1 dff, insetad of 3 as supposed when using 3 bit counter, but since there are 2 unused outputs, they are optimized off
+> the input of flop will just be the inverted output of the flop
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day3/22.jpg)
+
+Counter_opt2:
+
+> in this case, our output is assigned as 3'b100
+> now, we intiallize the design to use all the outputs, thus the 3 bit counter is implemented with 3 flops in the design
+> we have a large amount of logic within the design for the use of the adder circuit, since the first 2 bits are used, the logic will be used
+> at the output, we have inverted inputs !2!1!0, fed into a nor gate with an inverted C pin, thus the inputs are 2!1!0 ~= 3[3'b100]
