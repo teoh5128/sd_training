@@ -20,6 +20,11 @@ Content of training:
 > - [Lecture 3 + VSDIAT recordings](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lecture--vsd-iat-recordining-topics-2)
 > - [Lab 3](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lab-day_3)
 
+- [Day_4: GLS/Blocking vs Non blocking Assignments and synthesis simulation mismatch]()
+
+> - [Lecture 4+ VSDIAT recordings]()
+> - [Lab 4(https://github.com/YishenKuma/sd_training/blob/main/readme.md#lab-day_3)
+
 ## **Day_0 : System/Tool Setup Check. GitHub ID creation** 
 
 ### Lecture Topics
@@ -561,3 +566,179 @@ Counter_opt2:
 > we have a large amount of logic within the design for the use of the adder circuit, since the first 2 bits are used, the logic will be used
 
 > at the output, we have inverted inputs !2!1!0, fed into a nor gate with an inverted C pin, thus the inputs are 2!1!0 ~= 3[3'b100]
+
+## **Day_4: Timing, Hierarchical vs Flat synthesis, and Efficient flop coding style** 
+### Lecture 4 & VSD-IAT recordining Topics 
+#### Gate level simulation
+
+Running test bench with netlist, instead of the RTL, as Design Under Test
+
+Since netlist is logically same to the RTL code, same test bench will align with the design
+
+Map the appropriate technology parameters from library models at hand, to the synthesized netlist, thus allowing simulation of the netlist
+
+Can be used in dynamic timing analysis as it can take in account various clocks and resets simultaneously, and give insight on the asynchronous performance that STA is not meant for
+
+The reason we run GLS is to verify the correctness of design after synthesis, and ensuring the timing of design is met (GLS run with delay annotation)
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day4/1.jpg)
+
+> https://www.electronicsforu.com/electronics-projects/gate-level-simulation-increasing-trend
+
+#### GLS using iverilog
+
+Design now (netlist not RTL) contains all the standard cells instantiated
+
+Gate level Verilog models now read and given to the tool to produce the vcd file to be viewed in gtkwave
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day4/2.jpg)
+
+#### Netlist vs Gate level verilog models
+
+Gate level Verilog models allow for functional and timing-aware validation
+
+The necessity in performing functional validation is due to the synthesis and simulation mismatches
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day4/3.jpg)
+
+#### Simulation Synthesis Mismatch
+
+* Incomplete or missing sensitivity list:  synthesizer may ignore this, but simulator will adhere to it
+
+example case of missing sensitivity list:
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day4/4.jpg)
+
+Simulator operates based on “activity”, if input does not change, the output will not change
+
+Always block is evaluated only when @sel is changing
+
+But the always block is not sensitive to the changes in i1 or i0, output y not evaluated on changes in i1 or i0, mux acts like a latch
+
+If we want the module to be sensitive to the changes in any signal, the “always @(sel)” statement should be changed to always @(*)
+
+* Complete sensitivity list with mis-ordered assignments (e.g. modelling sequential logic using blocking assignments) 
+
+Example 1 of mismatch due to blocking statement:
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day4/5.jpg)
+
+blocking statements will be executed sequentially
+
+So for left side code, we will have 2 flops, as the values are written such that the value of d remains only at q0 until the next clock cycle
+
+However, for the right side code, q0 is already assigned to d, so the next statement where q is q0,q will be equal to d within same cycle
+
+This problem can be solved by using non-blocking statements, where the order of statements is not important, as the RHS will be evaluated, then LHS updated after time step, there will have to be 2 flops 
+
+* Non standard Verilog coding
+
+* Timing delay (e.g. placing delays on left side of always block assignments, this will not accurately model either RTL or behavioural models)
+
+#### Blocking assignment
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day4/6.jpg)
+
+Can be viewed as a one stop process, statements executed sequentially
+
+The blocking assignment RHS (right-hand side equation) is evaluated, then LHS (left-hand side equation) is updated, without interruption from any other verilog statement 
+
+Blocking assignments blocks trailing assignments in the same always blocks from occurring until after the current assignment has been completed
+
+Temp variable is needed
+
+#### Nonblocking assignment
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day4/7.jpg)
+
+Nonblocking assignments can be viewed as a two step process. At the beginning of the time step, the RHS is evaluated, then at the end of the time step, the LHS is updated.
+
+Non blocking assignments are only made to register data types and are therefore only permitted inside of procedural blocks, such as initial blocks and always blocks
+
+Nonblocking assignments are not permitted in continuous assignments
+
+Nonblocking operator is the same as the less-than-or-equal-to operator (“<=”)
+
+Nonblocking assignment does not block other Verilog statements from being evaluated
+
+#### Stratified event queue
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day4/8.jpg)
+
+Stratified event queue defines how different events are organized into segmented event queues during simulation 
+
+There is no priority for tasks within active event queue, the tasks can be executed in any order
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day4/9.jpg)
+
+#### RTL coding guidelines
+
+Blocking and nonblocking assignments in the same always block should not be mixed
+
+Assignments to the same variable from more than one always block should not be made
+
+Blocking assignments are meant for combinational logics
+
+Nonblocking assignments are meant for sequential logics
+
+Sequential and combinational logics should be kept separate
+
+### Lab Day_4
+#### GLS and Synth Sim Mismatch
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day4/10.jpg)
+
+> ternary operator: <Cond>?<T>:<F> , The execution of a parameter assign (e.g. y = x?a:b) is such that, when x is true, y =a, when x is false, y =b 
+
+for this lab simulation, we have a mux selecting between io or i1 based on sel
+
+as can be seen from the waveform, when sel is low, the output is set to i0 waveform
+
+when sel is high, the output is set to i1
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day4/11.jpg)
+
+after performing sysnthesis, we view the gate level simulation, we can see that the behaviour of the output is matching with the previous waveform
+
+thus this case has no synthesis simulation mismatch
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day4/12.jpg)
+
+> bad_mux
+
+now we look at the same file, but the logic is written using an always block, and the always block is set to change whenever parameter sel undergoes change
+
+we can see from the waveform that when sel changes, y is set to the value of i0/i1 at the point of change, but following that, it does not change and remains constant until the next change in sel
+
+this is becuase in our code, we have not initiallized the changing behaviour of i0 and i1 into our design, thus the mux acts as a latch instead
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day4/13.jpg)
+
+now we perform our synthesis and gate-level simulation, and we see from the waveform that now thge output y is also taking into account the changes in i0 and i1, and acts as a mux as intended
+
+this is what is known as the synthesis simulation mismatch
+
+this can be resolved by replacing the "always @ (sel)" statement to "always @ (*)"
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day4/16.jpg)
+
+> blocking_caveat
+
+for this case, the verilog is written using a blockings statement, wherein the output is set to a value of x that is only computed in the proceeding statement, meaning that the final output d is set to previous value of x, causing the output to be delayed by 1 duty cycle
+
+as can be seen from the waveform, the output generated for d is only set in the next cycle
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day4/15.jpg)
+
+now we have perfromed synthesis and we have our gate-level simulation
+
+looking at the output data d, we can see that the output is not being delayed anymore, and the correct data is being displayed on the same duty cycle
+
+there difference in the simulation clearly shows the synthesis simulation mismatch due to the use of the blocking statement
+
+this can be solved by rearranging the order of the statements, or by using nonblocking statements
+
+#### Synth Sim Mismatch for blocking statements
+
+
+
