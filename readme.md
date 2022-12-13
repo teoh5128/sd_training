@@ -20,10 +20,10 @@ Content of training:
 > - [Lecture 3 + VSDIAT recordings](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lecture--vsd-iat-recordining-topics-2)
 > - [Lab 3](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lab-day_3)
 
-- [Day_4: GLS/Blocking vs Non blocking Assignments and synthesis simulation mismatch]()
+- [Day_4: GLS/Blocking vs Non blocking Assignments and synthesis simulation mismatch](https://github.com/YishenKuma/sd_training/blob/main/readme.md#day_4-timing-hierarchical-vs-flat-synthesis-and-efficient-flop-coding-style)
 
-> - [Lecture 4+ VSDIAT recordings]()
-> - [Lab 4(https://github.com/YishenKuma/sd_training/blob/main/readme.md#lab-day_3)
+> - [Lecture 4+ VSDIAT recordings](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lecture-4--vsd-iat-recordining-topics)
+> - [Lab 4](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lab-day_4)
 
 ## **Day_0 : System/Tool Setup Check. GitHub ID creation** 
 
@@ -720,6 +720,8 @@ this is what is known as the synthesis simulation mismatch
 
 this can be resolved by replacing the "always @ (sel)" statement to "always @ (*)"
 
+ #### Synth Sim Mismatch for blocking statements 
+  
 ![](https://github.com/YishenKuma/sd_training/blob/main/day4/16.jpg)
 
 > blocking_caveat
@@ -738,7 +740,7 @@ there difference in the simulation clearly shows the synthesis simulation mismat
 
 this can be solved by rearranging the order of the statements, or by using nonblocking statements
 
-#### Synth Sim Mismatch for blocking statements
+
 
 
 
