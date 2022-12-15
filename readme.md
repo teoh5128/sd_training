@@ -25,6 +25,8 @@ Content of training:
 > - [Lecture 4+ VSDIAT recordings](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lecture-4--vsd-iat-recordining-topics)
 > - [Lab 4](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lab-day_4)
 
+- [Day_5: DFT]()
+
 ## **Day_0 : System/Tool Setup Check. GitHub ID creation** 
 
 ### Lecture Topics
@@ -740,7 +742,7 @@ there difference in the simulation clearly shows the synthesis simulation mismat
 
 this can be solved by rearranging the order of the statements, or by using nonblocking statements
 
-
+## **Day_5 : DFT** 
 
 
 
