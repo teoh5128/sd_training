@@ -25,7 +25,7 @@ Content of training:
 > - [Lecture 4+ VSDIAT recordings](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lecture-4--vsd-iat-recordining-topics)
 > - [Lab 4](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lab-day_4)
 
-- [Day_5: DFT]()
+- [Day_5: DFT](https://github.com/YishenKuma/sd_training/blob/main/readme.md#day_5--dft)
 
 ## **Day_0 : System/Tool Setup Check. GitHub ID creation** 
 
@@ -744,5 +744,244 @@ this can be solved by rearranging the order of the statements, or by using nonbl
 
 ## **Day_5 : DFT** 
 
+#### Testability
+
+Layman terms: “A characteristic of an item’s design which allows the status (operable, inoperable, degraded) of that item to be confidently and quickly determined”
+
+VLSI terms: “If a design is well controllable and well observable, it is said to be easily testable”
+
+### The 3 Ws for DFT _ What, Why , Where/When
+
+#### What:
+
+DFT is a technique used to facilitate a design to become testable after production, or, the technique of adding an extra design to make sure it is tested after fabrication
+
+Some examples of designs for making chips testable:
+
+* for macros, MBist, Memory Built in self test, logic are used
+* For flops, scan chains are used
+* For combinational circuits, test patterns are generated, the number of test patterns will be based on the number of inputs (patterns = 2^inputs)
+
+#### Why:
+
+It makes testing easy at the post-production process
+
+Chips can be tested through 3 levels after fabrication:
+
+* Chip level, when chip is fabricated
+* Board level, when chip is integrated on board or package
+* System level, when several boards are assembled together
+
+DFT is also done due to the economical and market needs, performing testing at the early stages such as chip level finding a defect in the manufacturing can prevent great loss if the fault is detected at user end, where the risk is much too high to allow, it is best to find the errors at chip level to avoid unnecessary losses
+
+#### Where/When:
+
+When? DFT is inserted at the beginning of design flow
+
+Where? DFT is inserted during synthesis stage, the DFT code should be a synthesizable before being manufactured, thus it needs to be inserted during synthesis
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day5/1.jpg)
+
+>  Asic design flow
+
+### Pro’s and Con’s
+
+#### Pros
+
+* Reduces tester complexity
+* Reduces tester time (70% of production of chip is due to testing time)
+* Reduces chance of loss due to faulty device going to user end
+
+#### Cons
+
+* Adds complexity to design flow
+* Increases power, area, and package pins (due to additional circuitry and pins)
+* Design time will increase
+
+### Basic Terminologies
+
+#### Controllability
+
+From DFT point of view, both ‘0’ and ‘1’ need to be able to propagate to each and every node within target patterns
+
+A point is said to be controllable if both ‘0’ and ‘1’ are propagated through the scan patterns.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day5/2.jpg)
+
+> through the introduction of the mux for each register, we can check though the registers to see which might be faulty and causing the final output to be incorrect, insteas of testing each node one by one, this allows you better control of the design
+
+#### Observability
+
+To make sure each node is controllable, we need to have observability
+
+Observability is the ability to measure the state of a logic signal
+
+To measure a node means that the value at the node can be shifted out through scan patterns and can be observed through scan out ports
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day5/3.jpg)
+
+> Through the usage of flip-flops, which allows the data to be observed at the output of the flops without affecting the design 
+
+#### Fault
+
+A physical damage/defect (fabrication defects) compared to the good system, which may or may not cause system failure
+
+#### Error
+
+The result of a fault, where system goes into erroneous state
+
+#### Failure
+
+System not providing expected service
+
+A fault causes error which leads to system failure
+
+#### Fault coverage
+
+Percentage of the total number of logical faults that can be tested using a given test set T
+
+There will be a list of checks to be made from the tests, ensuring no error is happening, the number of tests completed that are false over the total number of tests is what is known as the fault coverage
+
+#### Defect Level
+
+Defect level is the fraction of shipped parts that are defective, or the proportion of the faulty chip where fault is not detected and was classified to be good
+
+### DFT Techniques
+
+#### Ad-hoc technique
+
+This technique needs to be done in the initial designing stages, or else it will lead to problems in the post-production stages when testing
+
+Steps:
+
+* Avoid combinational feedback
+
+Raise-around condition, refers to when the output of a combinational block is feedback to its input, the signal at the input cannot be determined between the old value or the new feedback value
+
+To mitigate that, we simply add a 1-bit register which acts as a flip flop, connected to a clokc, to ensure there will be no raise at the feedback input pin
+
+* All flip flops must be initialized
+
+There are cases where flip flops may go into a high impedance x-unknown state, where the output value is an unknown value x. how we can exit from this state is by resetting the flip-flops, so the set/reset pins need to be usable for the flip-flops
+
+* Partition a large circuit into smaller blocks
+
+Breaking large design into smaller partitions so that it can be easier to solve
+
+* Provide test control for the signals which are not controllable
+
+Need to add the circuitry needed to nodes to allow for the observability and controllability 
+
+* the ATE requirements have to be considered while designing the test logic
+
+ATE (Automatic Test Equipment) or ATGP (Automatic Test Pattern Generator) is what is used in the case where a high number of flops is used and the number of test patterns increase to a value we cannot put up manually
+
+ATE Functionality: Scan-in phase, Parallel Measure, Parallel capture, First Scan-Out Phase, Scan-out phase
+
+#### Structured technique 
+
+There are a few limitations present in the ad-hoc technique, thus the structured technique was developed to improve on these limitations
+
+* Scan
+
+All the flip-flops are converted to scan flip-flops
+
+* Boundary scan
+
+Similar to scan but limited to boundary, essentially breaking the design into smaller partitions and working through them
+
+* Built-in self-test
+
+MBist (Memory built in self-test): Instead of designing another testable circuit for macros from scratch, the company providing the macro has already provides a built in self-test in the memory. For a macro, all the conditions will be stored in a memory, we will need to run the built in self-test to see the expected outputs based on the inputs we give. All the corner cases will be tested.
+
+LBist (logic built in self-test): checks gates based on the logic that the component should operate on 
+
+### Introduction to scan-chains
+
+#### scan-chain technique
+
+* specifying the scan constraints
+* specifying scan ports and scan enables
+* compiling the dft
+* identifying the number of scan chains
+
+#### scan based technique
+
+Scan chains are elements in a scan-based design that is used to shift-in and shift-out the test data
+
+As mentioned previously, the addition of the 1-bit register allow for observability, however we cannot have a register added to every node of logic in the design, as that would increase area used immensely
+
+Instead, the more optimum method is to use a scan-chain, where a chain is formed by a number of flops connected back to back in a chain, with the output of one flop being connected to another
+
+The input of the first flop is connected to the input pin of the chip (called scan-in) from where the scan data is fed. the output of the last flop is connected to the output pin of the chip (called scan-out) which is used to take the shifted data out
+
+ Scan enable is like an enable line for the scan elements
+
+The scan in is done using an additional mux
+
+There are 3 types of scan lfip-flops configurations: multiplexed, clock,lssd
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day5/4.jpg)
+
+> conversion of normal d flip-flop into muxed flip-flop, which is a scannable flip-flop
+
+The longer the length of a scan chain, the higher the number of cycles required to shift the data in and out. 
+
+A smaller scan chain length with same number of flops, would mean that the number of input/output ports needed as scan_in and scan_out ports are increased.
+
+The length of the largest scan chain is determined by the number of cycles required to run a pattern. The number of ports required is twice the number of scan chains. 
+
+The length of a scan chain can be determined through the correlation of clock cycles required during Scan In and Scan Out operations. The number of cycles required for a ATPG pattern determines th number of flip flop in the longest scan chain, thus the length of the scan chain.
+
+#### purpose of scan flops
+
+Main 2 reasons are:
+
+* test the stuck-at faults in the manufactured devices, ensure that the faults can be controlled through the muxes
+* test the paths in the manufactured devices for delay, to test whether each path is working at functional frequency or not.
+
+#### Functionality of scan_chain
+
+Goal of scan chain: to make each node in the circuit controllable and observable
+
+Steps to perform basic scan-in and scan-out:
+
+1. assert scan_enable (make it high) so we enable (SI -> Q) path for each flip-flop
+2. keep shifting in the scan data until the intended values at the intended nodes are reached
+3. de-assert_scan_enable (make it low for one pulse of clock, in case of stuck-at-testing and two or more cycles in case of transition testing), to enable the D -> Q path, so that the combinational cloud output can be captured at the next clock edge. The capture data is propagated through each register/flip-flop at every clock egde.
+4. assert scan_enable once again and shift out the data through scan_out
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day5/5.jpg)
+
+> https://anysilicon.com/overview-and-dynamics-of-scan-testing/
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day5/6.jpg)
+
+> scan port is put in serially trough the from scan in port
+> at the first clock edge, the data will be shifted in to the flip-flop, for each following data, the data will be shifted in at each clock edge. 
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day5/7.jpg)
+
+> Capture is run at a slower frequency to detect Stuck-At faults
+> Before arrival of next active clock edge, the test pattern response is processed by the combinational logic and becomes available at the D input of next flip-flop
+> As soon as the active clock edge arrives, the processed test pattern response is captured by the next flip-flop and becomes available at the Q pin.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day5/8.jpg)
+
+> once capture is complete, the response test pattern is shifted out 
+> we compare the data after it has been completely propagated to its functional data by de_asserting the scan enable, meaning the functional data is passed through
+> if there is no mismatch between the output scan data and the functional data, then the combinational circuit outputs of the design are good, ensuring the registers and wires are not faulty
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day5/13.jpg) 
+
+#### Overview of DFT compiler
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day5/14.jpg)
+
+> DRC checks are performed before and after scan to ensure that the design rules are being violated due to the scan insertion
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day5/15.jpg)
+
+> where synopsys-DFT comes into play
 
 
