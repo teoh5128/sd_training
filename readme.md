@@ -984,4 +984,322 @@ Steps to perform basic scan-in and scan-out:
 
 > where synopsys-DFT comes into play
 
+## **Day_6 : Introduction on logic synthesis**
+
+### Lecture + VSDIAT recording topics
+
+##### takeaway from RTL course
+
+Digital logic is a very powerful switching function used in automation and decision making
+
+As digital logic has such a good role in performing decision making, it has become the basis for computing, electronic devices and control systems in our advancing digital world.
+
+These specifications / behavioural models are written in HDL (Hardware Description Languages) such as VHDL or Verilog
+
+These specifications are then represented in a programming language, which is RTL (Register Transfer Logic)
+
+#### what is logic synthesis
+
+In order to get the physical digital circuit that we want, we must perform synthesis, where the design is converted into gates and the connections are made between the gates, the given output file is the netlist.
+
+This process is also known as RTL to Gate Level Translation
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/1.jpg)
+
+The RTL files is used along with a .lib file to generate the netlist though synthesis
+
+* .lib and implementation
+
+The collection of logical modules with varying performance specifications
+
+The .lib file consists of various flavours of gates to allow for use of gate at different operating speed, to accommodate for timing conscious circuitry (Setup and hold timings)
+
+Faster cells allow for lesser cell delay, but the drawback is increased power and area, whereas slow cells require less power and area, but add more delay to the path
+
+The guidance in order for synthesizer to select the appropriate cells to be used at paths is done through the constraints given
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/2.jpg)
+
+The synthesized circuit can have different implementation, as the boolean logic can be restructured in various ways, meaning the synthesized circuit will have different sets of cells used, meaning the delay and paths would be different. 
+
+The synthesis will need to produce the most beneficial implementation dependent  on the sconstraints set for the given design
+
+The working digital logic circuit must be logically correct, electrically correct and timing met
+
+#### Intro to DC
+
+Design Compiler (DC) is a tool used for synthesis targeted for ASIC design flow from synopsys
+
+Features include:
+
+* It is a premium synthesis tool used across semiconductor industry
+
+* Design compiler has interperability with various backend tools from synopsys, meaning it gels well with other synopsys backend tools
+
+* Able to perform DFT scan stitch
+
+* Can handle huge designs with extreme complexity and provide good QoR, Quality of Results
+
+#### Terminologies associated with DC
+
+* SDC
+
+Synopsys Design Constraints
+
+These industry standard design constraints are supplied to DC to guide the tool for appropriate and suitable optimization to achieving best implementation
+
+It is used across EDA (Electronic Design Automation) implementation tools which are provided by different tool vendors
+
+Specifies design intent in terms of the timing, power and area constraints
+
+SDC is based on Tool Command Language, TCL
+
+* .lib
+
+Design library containing the standard cells
+
+* DB
+
+Similar to .lib, but using a different format, as DC understands libraries only in .db format. 
+
+.lib must be converted into .db 
+
+* DDC
+
+Synopsys proprietary format for storing the design information
+
+DC can write out and read in DDC
+
+DDC has all the information loaded in the tool memory
+
+* Design
+
+The RTL file which has the behavioural model of the design
+
+#### DC Setup
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/3.jpg)
+
+#### Implementation Flow of ASIC
+
+The steps in converting RTL to the Physical Database, GDS format
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/4.jpg)
+
+#### DC Synthesis Flow
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/5.jpg)
+
+#### TCL basics
+
+TCL is the language used for writing the sdc files
+
+All the dc internal commands are based on TCL only 
+
+* set
+
+Create and store information in variables
+
+Square brackets are used for nesting the commands in TCL
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/6.jpg)
+
+The variables can be shown using echo $"variable"
+
+The "$variable" cannot be used during set, it must be set variable
+
+* if {condition} {statement} else {statement_2}
+
+Executes statement only if condition is true, else executes statement_2
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/7.jpg)
+
+* while {condition} {statement}
+
+Enters a repetitive loop to executing statement as long as the condition is met
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/8.jpg)
+
+Incorrect writing of the while loop can lead to infinite loop, as condition may be written in such a way that the condition is always true
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/9.jpg)
+
+* for {looping var} {condition} {looping var modification} {statement}
+
+Executes a statement if condition is met based on the looping variable set , and executes until the condition is no longer met due to the looping var modifications in each iteration of loop
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/10.jpg)
+
+* foreach var list {statements}
+
+Executes command for every element present in the variable list
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/11.jpg)
+
+* foreach_in_collection var collection {statements}
+
+Specific to synopsys tools
+
+Excecutes command for each element in the collection , similar to list, but returned by many dc commands
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/12.jpg)
+
+### Lab Day_6
+#### Invoking DC basic setup
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/13.jpg)
+ 
+> Cloning github files into unix environment
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/14.jpg)
+
+> loading dc_shell
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/15.jpg)
+
+> The tool points to your_library.db library file, which is an imaginary non-existent library file, a dummy library pointed to in dc
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/16.jpg)
+
+> verilog file used for synthesis
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/17.jpg)
+
+> Theoretical logic representation of verilog file 
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/18.jpg)
+
+> reading the library file
+
+Dc will load internal dbs in the dc memory to infer the design first
+
+The tool will try to understand the design using gtech
+
+It invokes HDL compiler as the codes used are written in verilog
+
+The warning given, cant read link_library is because the dummy variable is not set to any real variable, we must initialize the variable appropriately
+
+Once the source file is compiled the registers are inferred
+
+The register inferred is a I bit flip flop with AR (asynchronous reset)
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/19.JPG)
+
+> written netlist not linked with sky123 lib, but instead using virtual libraries
+
+Internal virtual libraries have been inferred in the netlist after the input and output have been declared
+
+These libraries are known as GTECH, they are used since no proper library path was declared for the design
+ 
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/20.jpg)
+
+> GTECH is still being used instead of the sky libs, the reason for this is because the 2 variables $link_library and $target_library has not been set
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/21.jpg)
+
+> The star signifies the libraries that are already in DC memories, as we do not want to override them, we do not want to lose any libraries that may be used by the tool
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/22.jpg)
+
+> Now the tool can link the sky lib for performing synthesis
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/23.JPG)
+
+> Running compile command
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/24.JPG)
+
+> Now we can see that the netlist is no longer using GTECH and is using the components from the sky130 lib file
+
+#### ddc gui with design_vision
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/25.JPG)
+
+> A ddc file must be written out to be viewed by the design_vision tool
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/26.JPG)
+
+> Exit and use command "design_vision" to invoke tool to view design
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/27.JPG)
+
+> Read the ddc file in the design_vision tool
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/28.JPG)
+
+> We cannot read the verilog file written "lab1_flop_net_3.v", the library path will be set to the GTECH paths, as this command will only read the verilog file 
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/29.JPG)
+ 
+> Reading the ddc file allows the library paths to be included into the tool when read, as the ddc file saves all information in the tool memory during the used session
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/30.JPG)
+
+> The advantage of using the ddc file is that ddc is Synopsys propriety format, meaning that it can only be read by synopsys tools, so we can write the ddc file from DC and hen read it in ICC tool
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/31.JPG)
+
+> Viewing the schematic of the design, double clicking the module allows to view all the standard cells present
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/32.JPG)
+
+> Schematic is matching with the verilog file read, only difference to note is the inverter connected to the reset pin, however, this is due to the flop reset pin being active low
+
+#### dc synopsys dc setup
+
+Every time we open DC, the 2 variables need to be set
+
+set target_library DC_WORKSHOP/lib/sky130_fd_sc_hd__tt_025C_1v80.db
+
+set link_library {* $target_library}
+
+This is a very tiresome and error prone disadvantage with using this process
+
+The solution to this is though the use of .synopsys_dc.setup 
+
+There will be 2 versions of this file, one in the DC installation area, and one in the DC home area
+
+One advantage that DC flexibility offers is that DC will pick the .synopsys_dc.setup file if it is present in the home directory before looking to the installation directory, so we can make changes to the file in the home directory to perform the repetitive tasks for tool setup, meaning we will not have to manually set the target_library and link_library each time dc is invoked
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/33.JPG)
+
+> Writing a .synopsys_dc.setup file to be used by dc during invocation
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/34.JPG)
+
+> Now we can see that the target_library and link library have already been set because it was read from the .synopsys_dc.setup file
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/35.JPG)
+
+> If we alter the file naming even slightly, it may not be picked up by the tool
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/36.JPG)
+
+> Now that the naming is not correct, the commands are not read and thus dc tool library path will once again be set to their imaginary paths
+
+#### tcl scripting
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/37.JPG)
+
+> Usage of set and for loop commands
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/38.JPG)
+
+> Performing arithmetic using expr to perform calculation on variable
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/39.JPG)
+
+> Usage of while loop
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/40.JPG)
+
+> Usage of foreach loop
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/41.JPG)
+
+> Difference to note between list and collection is that elements in a collection will be printed within brackets {}, a collection is a synopsys propriety format
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day6/42.JPG)
+
+> Usage of foreach_in_collection 
 
