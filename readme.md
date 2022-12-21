@@ -1307,4 +1307,285 @@ One advantage that DC flexibility offers is that DC will pick the .synopsys_dc.s
 ![](https://github.com/YishenKuma/sd_training/blob/main/day6/42.JPG)
 
 > Usage of foreach_in_collection 
+ 
+## **Day_7 : Basic SDC Constraints**
+
+### Lecture + VSDIAT recording topics
+
+#### Intro to STA
+
+##### Max and Min delay Constraints
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/1.jpg)
+ 
+The max frequency that this path can operate on can be used to set the constraint the max delay that the combinational circuit must be. The signal launched from DFFA on clock edge should reach DFFB setup time before next clock edge.
+
+The maximum time the combinational circuit takes including setup time of flop b must be less than the time period of clock received by both flops.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/2.jpg)
+
+The min delay constraint is just as important as having the max delay constraint. For circuit to work properly, the signal launched by DFFA on clock edge should reach DFFB only after hold time has passed after the clock edge.  
+
+The minimum delay of combinational circuit must be greater than the hold time of DFFB , as the data should not change within the hold window.
+
+##### Delay
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/3.jpg)
+
+We can use the water bucket analogy to explain the importance of delay. The aim is to fill the bucket with water.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/4.jpg)
+
+The time taken is determined by the inflow, the lower the inflow, the higher the time needed.
+
+In digital logics, the time for the gate to go from 0 to 1 is determined by the delay, the lower the inflow, the higher the delay. In terms of digital logics, the inflow of water is equivalent to the inflow of current, or the input transition, the lower the input transition, the higher the delay in circuit.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/5.jpg)
+
+Now we look at the analogy with the same inflow for both cases, but the size of the bucket is larger for case 1
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/6.jpg)
+
+The larger the size of bucket, the longer the time taken to fill bucket. In terms of digital logic, delay is a function of load capacitance, the higher the load capacitance, the higher the delay.
+
+High delay can come from either low input transition into gate, lengthy nets, or nets with high fanouts. Delay of cell will be a function of input transition and output load. We can attempt to reduce delays caused by these issues by either upsizing cell to increase input transition, or shorten the length of route between elements, or inserting buffers in between to reduce the load.
+
+##### Timing ARC
+
+* Combinational Cell
+
+The delay information from every input pin to every output pin which it can control is present in the timing arc
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/7.jpg)
+
+In the case of this mux, the output y is dependant on the 3 input pins i0, i1 and y, thus there will be 3 timing arcs, as the change in any of the input pins can cause a change in the output pin
+
+* Sequential Cell
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/8.jpg)
+
+For flip-flops, the delay information from clock to Q will be present in the timing arc, as the output can only change based on the change in clock
+
+For latch, the delay from clock to Q, and the delay form D to Q will be present in the timing arc, as the output may change based on change in either clock or D
+
+We also have setup and hold time requirements
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/9.jpg)
+
+1 matter to note is that the setup and hold does not occur from pos level clk for PosLevelDlat, and neg level clk for NegLevelDlat. Setup hold is around the sampling point of the clock. There is a distinct difference in the sampling point for pos/neg edge DFF and Pos/Neg level Dlat. The sampling edge will occur at the point before data becomes opaque while still transparent.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/10.jpg)
+
+##### Timing Paths
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/11.jpg)
+
+The timing path is the path between the start point and end point, where start point is the input port or clock pin of sequential element, and end point is the output port or D pin of sequential element
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/12.jpg)
+
+In this example, we are having 2 timing paths with delay of 1.7ns and 1.2ns respectively.
+
+Based on the previous discussion, we can derive an equation for max delay Tck, which is,
+
+Tck => Tcq + Tcomb +Tsetup
+
+TckA => 0.5 +1.2 + 0.5 => 2.2ns [Critical Path]
+
+TckB => 0.5 + 0.7 +0.5 => 1.7ns
+
+TckA is having a higher value of max delay, thus it becomes our critical path, and our frequency will be defined on this value
+
+Fclk = ½.2ns = 454.5Mhz
+
+We can achieve a better frequency in this circuit by improving the delay on the critical path, the way we can do this is by setting constraints on the elements to limit the value of delay
+
+#### Constraints
+
+In setting constraints for the design, we must first establish how much delay is acceptable.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/13.jpg)
+
+In practice, we have a desired frequency for the circuit to operate on, thus we need to calculate the acceptable delay based on this. We must squeeze the combinational logic delay such that the desired frequency is achievable.
+
+Once the clock period is defined, the synthesis will work to optimize the logic based on the clock period, and the delays between the reg to reg paths will be limited, and the appropriate cells will be selected form the libs to meet the delay needed.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/14.jpg)
+
+Now if we look from a bigger picture, we are having more reg to reg paths as the number of elements begin to become more complex outside a boundary. These are synchronous paths, and thus the input and outputs needs to be constrained as well to squeeze the delay.  
+
+* Reg to Reg is constrained by clock ( Tck => Tcq + Tcomb + T su)
+
+* Reg to Out is constrained by Output external delay and clock period
+
+* In to Reg is constrained by Input external delay and clock period
+
+The Reg to Out and In to Reg are called IO paths and the delay modelling referred is called IO delay modelling. IO delay modelling is usually based on STD interface specifications
+
+we must set the constraint on the external delay because we are having 2 unknown delays from the internal combinational logic and the external, thus we can split the available time between the 2 through constraining the external delay
+
+In handling constraints, we must be aware of the budget of the design for external module, and collect all the necessary information in planning the synthesis, so that we can understand properly and create good constraints.
+
+#### INP Trans Output Load
+
+If we look at our case at an idealistic perspective, the IO Delay modelling should be sufficient for setting the delays to allow for desired frequency
+
+![]( https://github.com/YishenKuma/sd_training/blob/main/day7/15.jpg)
+
+However, our signals are not always ideal, as signals do not have zero rise time, thus input transition is playing a role in creating delay that was not accounted, thus we must model our input transition delay as well, which will further squeeze the logic so that the timing is met
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/16.jpg)
+ 
+The next thing we need to consider is the output load, as the cell delay affected by it, and if we do not take into and model the load, then the output logic will behave differently, as this is a parasitic net, not an ideal net. Thus, the logic needs to be squeezed further again to factor in the output load. General rule is to set 70% of timing for external delay and 30% for internal delay.
+
+The value that needs to be modelled for the input transition and output load is determined by the spec. if in the case that the external input and outputs are interfaces at the chip boundary, then the interfaces would have specifications that can determine value of load 
+
+If we have 2 models that are synthesized separately, we can perform the budgeting by discussing with the module owners to set the appropriate constraints
+
+We need to have an optimum budgeting for setting the constraints, as under-budgeting causing setup violations, and over-budgeting may lead undesired effects such as high leakage power and high area consumption
+
+#### Timing dot Libs
+
+We have mentioned previously that the .db is what is used by the tool for reading the lib for the design. We cannot read the .db, however we are able to read the .lib file to understand the information present and how the tool infers the information.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/17.jpg)
+
+Aside from the information discussed preciously that can be found in the .lib such as PVT settings and unit for current, power, voltage ,.etc, we can also find the max transition and max capacitance.
+
+Max transition refers to the maximum slew that is allowed at the input pin of cell.
+
+Max capacitance refers the maximum allowed capacitance on the output pin of a cell.
+
+These 2 are used as a last line of defence to model the design in such a way to control the capacitances and transition times. For example, for high fanout out nets that would accumulate high capacitance, the tool will perform buffering on the nets so that the capacitance at the output pin does not violate the max capacitance set. Users are able to manually set the values for max capacitance and max transitions to constrain the design.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/18.jpg)
+
+As mentioned before, delay is a function of input transition and output load
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/19.jpg)
+
+The library provides a table for every cell specifying the input trans and output load and the resulting delay. The tool will be able to know the input trans and output load for each device imported from libs based on the lookup table. 
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/20.jpg)
+
+However, the lookup table cannot specify all the values that me be used, thus there may be interpolation done for the values in between data in lookup table to acquire an accurate value.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/21.jpg)
+
+The lookup table is not limited to delay, it can be used for getting data for multiple other specifications in the lib.
+
+Each cell will be having varying flavours meaning different drive strength, cell area, leakage power, pin capacitance, max allowed transition per pin. Functionality and assignment of pins are also shown in the ./lib, known as attributes The data in the .lib is also specified for power and timing factors separately. The tool understands the connections and assignments of cells through the attributes specified in the lib.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/22.jpg)
+
+Unateness refers to the behaviour of cell as a rising input is fed through. Positive unate is when the rising input results in a rising output or no change in output. Negative unate is when the output is the inverted version of input logic. Non-unate refers to when the positive unateness and negative unateness is seen from a cell.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/23.jpg)
+
+Unateness is important as the tool uses the information to propagate the transition.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/24.jpg)
+
+For sequential cells, the timing sense can differ based on the rising or falling edge, as Q may be rising or falling with respect to clock.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/25.jpg)
+
+The setup timing for posedge and negedge flops will be known by the tool from the data that is given from the lib file, as this information is present as written for the specific timing type
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/26.jpg)
+
+The related pin also shows the appropriate edge that the timing type should be, as “_N” refers to the inverted state of pin, thus as can be seen above, the timing type for CLK_N is setup_falling while for CLK it is Setup_rising.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/27.jpg)
+
+For latches, as we mentioned before, the pos latch will sample the data on negative edge before opaque state, whereas for Neg latch, data will be sampled on the rising edge
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/28.jpg)
+
+The tool can get this data from the lib file as well.
+
+This info present in the .lib tells the tool what to do for setup calculation during specific egdes.
+
+### Lab day 7
+
+#### Querying the properties of .lib from dc shell
+
+* list_lib 
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/29.jpg)
+
+> shows the libraries that have already been loaded
+
+* get_lib_cells
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/30.jpg)
+
+> query all the and gates in the library
+
+* sizeof_collection
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/31.jpg)
+
+> displays number of collection queried
+
+* foreach_in_collection
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/32.jpg)
+
+* get_lib_pins
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/33.jpg)
+
+* get_attribute
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/34.jpg)
+
+> foreach_in_collection x [get_lib_pins sky130_fd_sc_hd__tt_025C_1v80/sky130_fd_sc_hd__nand4b_4/*] {echo [get_object_name [get_lib_pins $x]] "="  [get_attribute [get_lib_pins $x] direction]} 
+
+> command prints pin names with associated direction
+
+* get_lib_attribute
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/35.jpg)
+
+> foreach_in_collection x [get_lib_pins sky130_fd_sc_hd__tt_025C_1v80/sky130_fd_sc_hd__nand4b_4/*] {echo [get_object_name [get_lib_pins $x]] "="  [get_lib_attribute [get_object_name [get_lib_pins $x]] direction]}
+
+> command prints pin names with lib associated direction
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/36.jpg)
+
+> foreach_in_collection x [get_lib_pins sky130_fd_sc_hd__tt_025C_1v80/sky130_fd_sc_hd__nand4b_4/*] {echo [get_object_name [get_lib_pins $x]] "="  [get_lib_attribute [get_object_name [get_lib_pins $x]] function]}
+
+> command prints pin names with lib associated function
+
+> 4 input nand gate should show !A|!B|!C|!D , in our run the !A is replaced with A_N meaning inverted pin
+
+* script to filter pins by output pins and show function
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/37.jpg)
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/38.jpg)
+
+* get_lib_attribute $cell area
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/39.jpg)
+
+* get_lib_attribute $input_pin capacitance
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/40.jpg)
+
+* get_lib_attribute $input_pin clock
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/41.jpg)
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/42.jpg)
+
+* get_cells -filter
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/43.jpg)
+
+* list_attributes
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day7/44.jpg)
+
 
