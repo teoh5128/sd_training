@@ -1592,4 +1592,317 @@ This info present in the .lib tells the tool what to do for setup calculation du
 
 ![](https://github.com/YishenKuma/sd_training/blob/main/day7/44.jpg)
 
+## **Day_8 : Advanced SDC Constraints**
 
+### Lecture + VSDIAT recording topics
+
+#### Clock Tree Modelling - Uncertainty
+
+What needs to be constrained for clock? Our constraint on the clock will resukt in the constraint on the combinational delay. But is constraining the clock period all that is needed?
+
+The clock arriving at a flop will most of the time never reach the next flop at the same time. This is because the distance n routing will not be the same, thus the time will be different, in order to make up for this, the clock path is buffered in order to ensure the clock arrive at same time, but it will not be exact. The slight differences in arriving time for clock in practical networks will affect our timing. 
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/1.jpg)
+
+> clock generation
+
+All our clock sources will also have inherent variations in the clock period due to stochastic effects. There will be non-zero rise time, and the edge will arrive within a window, wherein the location of edge varies from cycle to cycle within window. This is known as jitter,  meaning edge will arrive within a margin window and not at the exact time as expected.
+
+Because of this jitter, our timing will not be as expected as our margin will not be the same anymore.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/2.jpg)
+
+> clock distribution
+
+Practical clock networks after CTS stage may not see the clock edges at the same instance. The indifference in clock distribution networks between components is known as clock skew. CTS will try to balance the clocks and bring the value of clock skew to as close to 0 as possible.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/3.jpg)
+
+ > clock skew 
+
+Tclk => Tcq + Tcomb + T su + Tskew (our timing delay now affected by the clock skew)
+
+During synthesis, our timing will be clean, but once CTS is performed and the delays and clock skews are introduced, our available timing window will be eaten up. Thus we need to perform optimization with consideration to clock skew and jitter (duty cycle or period jitter).
+
+* Duty cycle jitter: The variation in timing from one rising clock edge to the following falling clock edge, also referred to as Ton/Tperiod
+
+* Period jitter: The variation in timing from one rising clock edge to the following rising clock edge
+
+Clock skew and Jitter are known as clock uncertainty
+
+In addition to that we need to factor in the source latency and the clock network latency also.  The source latency refers to the time taken by the clock source to the generate clock. Clock network latency refers to the time taken by the clock distribution network. 
+
+Any modelled clock skew and latency should be removed post CTS , as the actual clock tree delay should be calculated by the tool. The pessimism needs to be removed from the constraints.
+
+Stage | Clock Uncertainty 
+--- | --- 
+Synthesis | Jitter + Skew 
+Post CTS | Only Jitter 
+
+#### IO delays
+
+Ports are the primary IOs of the design for the inputs and outputs. We can query the ports of the design using “get_ports”, and the selection can be filtered through various was. Keep in mind that the attributes will be case sensitive.
+
+We use the commands set_input_delay and set_input_transition on our input ports to constrain the IO paths..
+
+* set_input_delay -max 3 (allows the data to take a max of 3 ns to arrive)
+
+* set_input_delay -min 0.5 (data may come as early as 0.5ns)
+
+Similarly for output ports, we need to use the command set_output_delay and set_output_load for constraining the IO path.
+
+* set_output_delay -max 3 (allows the data to take a max of 3 ns to change)
+
+* setoutnput_delay -min 0.5 (data may change as early as 0.5ns)
+
+The command used to create the clock is “create_clock” with an associated name and period on a valid clock definition point, the clock should not be created on the hierarchical pins which are not clock generators. The clock must be created on either generated clocks (PLL, OSCILLATORS) or primary IO pins.
+
+![]( https://github.com/YishenKuma/sd_training/blob/main/day8/7.jpg)
+
+If we want our clock waveform to have a starting low phase, or start at a different time, then we need to add the option to the create clock command “-wave {first_rise_edge and first_fall_edge}”
+
+In order to bring in the practicalities of the clock network, in addition to the create clock command, we need to also set that clock latency “set_clock_latency”, which models that clock delay, and set the clock uncertainty “set_clock_uncertainty”, to set the skew and jitter of clock. Later this needs to be modified such that it only reflects the jitter once the clock tree is built. 
+
+#### Generated clocks
+
+ We also need to note that while the Output is being constrained with the clock leaving the module, we are not taking into account the physicality of the clock leaving the module, as the routing length would be increased, we should be experiencing more delays on the path. This is known as the propagated delay. The way we handle this is using generated clocks.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/35.jpg)
+
+We do this using the command “create_generated_clocks” which needs to be with respect to the master clock. The -master and -source options will tell us what is the source with respect to what  the clock is created. The generated clock may be having a division factor as well, which divides the master clock by a factor.  -div 1 tells us that there is no clock divider in the circuit. 
+
+The output needs to be constrained with respect to output clock and not the input clock, so we need to set our output delay for the output clock. The riming at the output needs to be met with respect to the output clock.
+
+Given a case scenario in which we are having 2 different clocks coming from a mux propagated through the design, DC tool will not propagate the clocks based on the intent of the designer but based on the timing arcs that are presented in the design. All the timing arcs from the definition point will see the clock propagation by default, which is undesirable. We need to specify in the design such that the clocks propagate according to the intent of the designer through the desired paths and that this is understood by tool.
+
+#### Vclk, Max Latency, Rise_fall, IO delays
+
+* input delay
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/42.jpg)
+
+Set input delay will cause the clock to be shifted left by the specified time for -max. The available time will be equal to the clock period – uncertainty – input delay. If the value for max is a negative value, then the clock will be shifted to the right, making the available time increase. Positive delay tightens while negative delay relaxes the timing.
+
+Set input delay will cause the clock to be shifted left by the specified time for -min. This will be good for hold, as the window for data to be captured is increased. If we have no min delay, we might be violating on the hold timing. However, if we have a negative value for the delay, and the clock is shifted to the right, then the data would not be captured in the appropriate clock cycle. Positive delay will relax while negative delay tightens hold timing
+
+> This behaviour is similar for set output delay. 
+
+If we are having a data path fed into the input of our port, but it is operating on negative edge of the clock, the way we can add this constraint in addition to other constraint specified is through the options -add, and the option -clock_fall so the tool knows that the delay specified is in regard to the falling edge and not rising edge of the clock. The advandtage of using both constraints is that the design can be optimized appropriately depending on the design. 
+
+> This behaviour is similar for set output delay. 
+
+* Virtual Clock
+
+If  we are having a path purely on combinational logic, then we can constrain the path simply by using the set max latency command from input port to output port. 
+
+We can also constrain the design through the use of virtual clocks, for paths which are purely combinational logic. In system level, the path is looked at as external reg to reg path with an actual clock, so if the logic is not optimized appropriately, the path will suffer in the top implementation. Virtual clocks are created with no defined point, as long as no definition point is specified, the clock will be a virtual clock. Then we can set the constraints on the ports through this virtual clock.
+
+> since the virtual clock is an imaginary clock, there is no latency.
+
+* Driving cell
+
+When we have our transition delay, and it passes through the circuit it is going to be come more delayed due to the heavy load. In reality, the transition will get degraded when it sees a load, this is because it will be driven by another cell. Instead of blindly modelling the transition, if we model the cell driving the port, the characteristics of the cell will change depending on the load. 
+
+If we model an input transition, this transition will be a fixed transition irrespective of the load. But the transition will get worse if the load is heavier, thus we can use set_driving_cell to handle the variation in transition due to load. Set driving cell is more accurate and recommended for all internal paths.
+
+For top level primary IOs, we should use set input transition. For module level IOs, we should use set driving cell. Set driving cell is preferable mainly because it is a more realistic approach. This is just the recommended approach, as long as we can model the real behaviour of the silicon during implementation, there is no issue.
+
+### Lab day 8
+
+#### get cells, get ports, get nets
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/5.jpg)
+
+> Verilog file used for lab, in which 3 flops are used with combinational logics are used between the flops
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/6.jpg)
+
+> 3 registers read in design
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/9.jpg)
+
+> schematic of design from design_viewer
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/8.jpg)
+
+> get cells and ways of usage
+
+> hierarchical cells refer to cells that do not physically exist
+
+> ref_name will not be the same as the instance_name as the ref_nam is based on the definition in the lib file
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/4.jpg)
+
+> get ports and ways of usage
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/10.jpg)
+
+> get nets and ways of usage
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/11.jpg)
+
+> one thing to keep in mind in regards to nets is that you cannot have 2 driving pins into 1 driven pin, the reason for this is because it create corrupted logic on the node, this is known as a multidriven net
+#### get pins
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/12.jpg)
+
+> Get_pins and ways of usage
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/13.jpg)
+
+> one thing to note for the clock attribute for pin is that the attribute is only set for input pins, if we use the command for output pins we will receive an error
+
+> another attribute to distinguish is clocks which will list out the name of clock connected to the CLK pin, whereas for clock, it is shows pins that have been specified for clock input by true or false
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/14.jpg)
+
+> for our lab presently, we do not have any clocks created yet, so we will need to use the create_clock command to do this
+
+#### create clock waveform, , get clocks, querying clocks
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/15.jpg)
+
+> now we have generated a clock for the clock pins
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/17.jpg)
+
+> the attribute for is_generated is set false meaning that the clock is the master clock
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/16.jpg)
+
+> reporting the clocks
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/18.jpg)
+
+> getting the name of clocks connected to input pins
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/19.jpg)
+
+> creating bad clock
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/20.jpg)
+
+> incorrect placement for clock as this will create a broken logic. We can use command “remove_clocks” to remove the enwanted clock
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/21.jpg)
+
+> we can create clocks with different waveforms as discussed earlier using the -waveform option to specify the first rise_edge and first fall edge 
+
+#### clock network modelling – uncertainty, report timing
+
+Uncertainty refers to the clock skew and jitter
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/22.jpg)
+
+> Setting the source, and network latency, and the clock uncertainty for setup and hold times
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/23.jpg)
+
+> if we report timing without any clocks created, we will have an unconstrained path
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/24.jpg)
+
+> once the clock is constrained, we can see if the timing is met in the data path
+
+>The arrival time is equal to the Tcq + Tcombi, and the Required time is equal to the Tclk – Tsu
+
+> The timing in the path will be violated if the arrival time is more than the required time, slack = required time – arrival time, if slack is negative, then the timing is violated
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/25.jpg)
+
+> now we are reporting our timing once we have told the tool the clock uncertainties to take into consideration, our slack has decreased as the clock uncertainty introduced has been removed from our data required time, making our slack reduced as well. The skew introduced will look to not help the setup and hold, as to act for pessimistic timing. Our data required time is equal to Tclk -Tsu – Tuncert. 
+
+> Setup timing is a 1 cycle check, launch is at zero, capture is at one. For setup timing, the data reaching the capture pin will be pulled back due to the uncertainty, skew is reducing the available window for setup, Tclk - Tsu – Tuncert must be higher than Tcq + Tcombi. If we cannot set a value for uncertainty such that the arrival time becomes greater than the required time.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/26.jpg)
+
+> we can see the effect of the clock_uncertainty type min in our report_timing -delay_type min, where the 0.1 introduced is assed to our data required time, instead of subtracted. For hold timing,   the data arrival time needs to be more than the data required time. So our slack will be decreased with the hold uncertainty introduced, as the required time becomes higher.
+
+> Hold timing is  a 0 cycle check, as the launch and capture is both at zero cycle. For hold timing, the data reaching the capture pin will be shifted forward due to the uncertainty, the skew will reduce the available window for hold. Our calculation for slack will be met as long as Thold must be less then minimum Tcq + Tcombi. With the introduction of delay, the Thold + Tskew must be less then minimum Tcq + Tcombi.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/27.jpg)
+
+> reports all the ports show us no values for the input transitions and output load, this is because we have not introduced these elements to our design yet
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/28.jpg)
+
+> if we look at our timing report from our input port or to our output port, we can see that the path is not yet constrained
+
+#### IO delays
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/29.jpg)
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/30.jpg)
+
+> modelling the inputs, outputs for min and max delays, and we will get a constrained path. We need to set both the max and min or else either setup or hold will be unconstrained.
+
+> we can also use the -cap -net, and -trans option for report timing to see the capacitances and transmittance 
+
+Our timing paths still need to factor in the input transitions as well
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/31.jpg)
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/32.jpg)
+
+> the input transition will also cause the slack to decrease, the value of period needs to high enough to take into account of the delays introduced or the timing will be violated
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/33.jpg)
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/34.jpg)
+
+> setting the output load, the load introduced will cause the delay to get worsen as well and reduce the slack available
+
+#### generated clocks
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/36.jpg)
+
+> if we look at our timing report at the moment, we can see there is no difference in the clock network delay for . We need to maintain the IO delay with respect to the clock at the output point, as there may be a routing delay that could happen for the clock at that point, it is best to annotate this separately.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/37.jpg)
+
+> We create the generated clock using command create_generated_clock. We can see this clock using report clocks. We can also see if the attribute for the clock is set true for is_generated.
+
+> However, our timing paths are still shown with respect to the master clock only, we want our capture to be shown with respect to our generated clock. We need to set the constrains on the design through the generated clock.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/38.jpg)
+
+> Now we can see that our timing path has been modelled to take into account the clock latency and output delay, thus our data required time has changed as a result.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/39.jpg)
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/40.jpg)
+
+> these commands can be written out in a command script, and then used for a design. We can then check on whether these constrains have been set through the report_ports command.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/41.jpg)
+
+#### set max delay
+
+> Now we will work with a similar circuit with an additional 2 inputs that are fed through an XOR gate and coming out as new output port. Since our design is similar, we can use the same constraint file written earlier. 
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/43.jpg)
+
+> As can be seen, the timing path to output Z has not been constrained yet, since this design is having the 2 new input ports and 1 new output port. The timing path from IN_C will also show unconstrained path. 
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/44.jpg)
+
+> Now we have set a max delay of 0.1 from all inputs to Output Z, we can no see that the timing path has been constrained. The reason why this path is violated is because ewe have set this constraint after synthesis, so the tool has not yet optimized the path 
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/45.JPG)
+
+> Now we can see the timing path has been optimized based on the constraint set, and we are no longer violating. This is because the tool has modified the cells used in the circuit while keeping the same logic, such that the overall combinational delay is reduced to meet the timing requirements. The XOR gate is replaced with a XNOR gate with 1 of the inputs inverted.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/46.JPG)
+
+#### VCLK
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/47.JPG)
+
+> now we have created our virtual clock which no sources. 
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/48.JPG)
+
+> once we have constrained the path by setting the input and output delays on the ports IN C , IN D and OUT Z. The report timing  will be constrained, however the design is violated because the available time of (10 -5 - 4.9 =0.1) is not sufficient for the combinational logic of 0.12, thus its is violated by 0.02.
+
+![](https://github.com/YishenKuma/sd_training/blob/main/day8/49.JPG)
+
+> Similarly to before, once we perform synthesis with regard to the constraint set, the optimization is performed and the logic is squeezed. Now our timing is met in the timing path.
