@@ -36,6 +36,12 @@ Content of training:
 
 > - [Lecture 7 + VSDIAT recordings](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lecture--vsdiat-recording-topics-1)
 > - [Lab 7](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lab-day-7)
+
+- [Day_8: Advanced SDC Constraints](https://github.com/YishenKuma/sd_training/blob/main/readme.md#day_8--advanced-sdc-constraints)
+
+> - [Lecture 8 + VSDIAT recordings](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lecture--vsdiat-recording-topics-2)
+> - [Lab 8](https://github.com/YishenKuma/sd_training/blob/main/readme.md#lab-day-8)
+
 ## **Day_0 : System/Tool Setup Check. GitHub ID creation** 
 
 ### Lecture Topics
